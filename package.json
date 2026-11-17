@@ -1,0 +1,44 @@
+{
+  "name": "dsh-group-chat",
+  "version": "0.1.0",
+  "private": true,
+  "description": "把多个 DSH 对话拉进一个群聊：自动轮转讨论，可围观、可插话、可 @ 指定发言人。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib",
+    "locale",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "group-chat",
+    "multi-agent",
+    "conversation"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hentai-joshu/dsh-group-chat.git"
+  }
+}

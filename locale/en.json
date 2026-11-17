@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "title": "Group Chat",
+    "description": "Put several conversations into one group chat: they take turns discussing, and you can watch, interject, and @ a speaker."
+  },
+  "panel": "Group Chat",
+  "newRoom": "New group",
+  "title": "Group name",
+  "topic": "Topic",
+  "topicPlaceholder": "What should they discuss?",
+  "members": "Members",
+  "maxTurns": "Max rounds",
+  "create": "Create group",
+  "cancel": "Cancel",
+  "empty": "No group chats yet",
+  "emptyHint": "Create a group and pick two or more conversations.",
+  "pickMembers": "Pick at least two conversations",
+  "start": "Start",
+  "pause": "Pause",
+  "resume": "Resume",
+  "stop": "Stop",
+  "send": "Send",
+  "placeholder": "Type a message, @ to pick a speaker…",
+  "typing": "is typing…",
+  "rounds": "Round {{turn}} / {{max}}",
+  "status": {
+    "idle": "Not started",
+    "running": "Discussing",
+    "paused": "Paused",
+    "done": "Finished",
+    "error": "Error"
+  },
+  "you": "You",
+  "system": "System",
+  "delete": "Delete",
+  "back": "Back",
+  "loading": "Loading…",
+  "failed": "Request failed"
+}

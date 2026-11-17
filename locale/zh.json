@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "title": "对话群聊",
+    "description": "把多个对话拉进一个群聊：自动轮转讨论，你可以围观、随时插话、用 @ 指定发言人。"
+  },
+  "panel": "对话群聊",
+  "newRoom": "新建群聊",
+  "title": "群名称",
+  "topic": "讨论话题",
+  "topicPlaceholder": "想让他们聊什么？",
+  "members": "成员",
+  "maxTurns": "最大轮数",
+  "create": "创建群聊",
+  "cancel": "取消",
+  "empty": "还没有群聊",
+  "emptyHint": "新建一个群，选两个以上对话作为成员。",
+  "pickMembers": "至少选择两个对话",
+  "start": "开始",
+  "pause": "暂停",
+  "resume": "继续",
+  "stop": "结束",
+  "send": "发送",
+  "placeholder": "说点什么，输入 @ 可以点名…",
+  "typing": "正在输入…",
+  "rounds": "第 {{turn}} / {{max}} 轮",
+  "status": {
+    "idle": "未开始",
+    "running": "讨论中",
+    "paused": "已暂停",
+    "done": "已结束",
+    "error": "出错"
+  },
+  "you": "我",
+  "system": "系统",
+  "delete": "删除",
+  "back": "返回",
+  "loading": "加载中…",
+  "failed": "请求失败"
+}
