@@ -38,22 +38,27 @@ DSH Session B ──turn/end──┘         │
 
 ## 已验证
 
-- 单元测试 **27/27**：自动选人、`[[next]]`/`[[all]]`/`[[end]]`、`@所有人`、按顺序轮转、插话排队、暂停/继续、停止词、不限轮数、解除上限、冷恢复顺序、runtime-context 不覆盖 requestId、同路径路由只注册一次、空白会话过滤。
+- 单元测试 **38/38**（`node --test tests/engine.test.mjs tests/host.test.mjs`）：自动选人、`[[next]]`/`[[all]]`/`[[end]]`、`@所有人`、按顺序轮转、插话排队、暂停/继续、停止词、不限轮数、解除上限、冷恢复顺序、runtime-context 不覆盖 requestId、同路径路由只注册一次、归档会话过滤。
 - 实机双会话：会话 A 发言 → 自动转给 B → B 以 `[讨论结束]` 收口，房间 `done`。
 - 侧栏「对话群聊」入口已加载（客户端 bundle 注册成功），host 的 `/sessions`、`/rooms`、`/room`、`/action` 均可用。
 
 ## 安装
 
-### 方式一：插件管理器（推荐）
+插件本身是纯 JS、零运行时依赖，**Windows / macOS / Linux 同一份代码**；不同系统只差「路径写法」和「DSH 自带的 node/pnpm 在哪」。下面两套写法都给出。
 
-1. 打开 DSH 的 **设置 → 插件**。
-2. 选择从本地目录安装，目录填本仓库的绝对路径，例如：
-   `~/Documents/dsh-group-chat`
-3. 安装后刷新页面；左侧栏出现「对话群聊」。
+### 方式一：插件管理器（推荐，两个系统完全一样）
+
+1. 打开 DSH 的 **设置 → 插件**，选「从本地目录安装」。
+2. 目录填本仓库的绝对路径：
+   - Windows：`C:\Users\you\Documents\dsh-group-chat`
+   - macOS：`/Users/you/Documents/dsh-group-chat`
+3. 安装后刷新页面（必要时重启 DSH）；左侧栏出现「对话群聊」。
+
+> `~` 不会被展开，必须写绝对路径；目录名尽量不要带空格和中文。
 
 ### 方式二：手动 link
 
-把这个目录放到任意位置，然后在 `~/.dsh/profiles/desktop/package.json` 里登记：
+把这个目录放到任意位置，然后在 profile 的 `package.json` 里登记（Windows 是 `C:\Users\you\.dsh\profiles\desktop\package.json`，macOS 是 `~/.dsh/profiles/desktop/package.json`）：
 
 ```json
 {
@@ -72,14 +77,33 @@ DSH Session B ──turn/end──┘         │
 }
 ```
 
-`link:` 后面写绝对路径（`~` 不会被展开）。然后在 profile 目录跑一次 install 并重启 DSH：
+> Windows 的路径照抄时注意用正斜杠或转义反斜杠，例如 `link:C:/Users/you/Documents/dsh-group-chat`。
 
-```sh
-cd ~/.dsh/profiles/desktop
-pnpm install
+`link:` 后面写绝对路径。然后在 profile 目录跑一次 install：
+
+**Windows（PowerShell）**
+
+```powershell
+$app  = "D:\deepseek"          # 换成你的 DSH 安装目录
+$node = "$app\resources\runtime\primary-runtime\dependencies\node\bin\node.exe"
+$pnpm = "$app\resources\runtime\primary-runtime\dependencies\pnpm\bin\pnpm.cjs"
+& $node $pnpm install --dir "$env:USERPROFILE\.dsh\profiles\desktop"
 ```
 
-> 手动改 profile 前先备份 `package.json`。装坏了把备份还原、`pnpm install`、重启即可。
+**macOS**
+
+```sh
+APP="/Applications/AI助手/DeepSeek Harness.app/Contents/Resources"
+node "$APP/runtime/primary-runtime/dependencies/pnpm/bin/pnpm.cjs" \
+  install --dir ~/.dsh/profiles/desktop
+```
+
+> macOS 上用本机 `node`（18+ 即可）跑 DSH 自带的 `pnpm.cjs` 就行；没有 node 时可以用 `"$APP/runtime/bin/node"`。
+> 桌面版 DSH 也可以完全跳过这一步，直接用方式一由插件管理器安装。
+
+装完重启 DSH。
+
+> 手动改 profile 前先备份 `package.json`。装坏了把备份还原、重跑一次 install、重启即可。
 > 已登记在 `dsh.profile.bundles` 的 bundle **不要**再往 `cordis.patch.yml` 追加 `- insert:`，两处都写会重复注册。
 
 ## 使用
@@ -114,12 +138,23 @@ pnpm install
 - **自动选人依赖发言者在结尾写路由指令**（`[[next: 别名]]` / `[[all]]` / `[[end]]`）；没写或写错会回退到下一位，不会卡死。指令会在入群前被剥掉，不会展示。
 - **全员回应是并行的**：`@所有人` 和成员 `[[all]]` 会把同一条消息同时投给所有目标成员，收齐全部回复后这一轮直接结束（不再自动轮转），期间用户插话会排队但通常会被结束丢弃。
 - **空白会话不出现在选人列表**：左侧聊天列表本来就不显示它们；想拉一个新对话，先在里面说一句话让它有内容。
+- **跨平台**：代码只用 Node 标准库和 DSH 的 `sessionController` / `session/event`，Windows、macOS、Linux 行为一致；差异只在安装路径、以及 DSH 自带 node/pnpm 的位置（见「安装」）。
 
 ## 开发
 
+需要 Node 18+，两个系统命令基本一致：
+
 ```sh
+# macOS / Linux
 node --test tests/engine.test.mjs tests/host.test.mjs
 ```
+
+```powershell
+# Windows PowerShell
+node --test tests\engine.test.mjs tests\host.test.mjs
+```
+
+> 没装 node 时可以用 DSH 自带的：Windows 是 `你的DSH安装目录\resources\runtime\primary-runtime\dependencies\node\bin\node.exe`，macOS 是 `/Applications/AI助手/DeepSeek Harness.app/Contents/Resources/runtime/bin/node`。
 
 - `lib/engine.js`：纯逻辑，注入假 `prompt` 即可测试。
 - `lib/index.js`：Host 入口、HTTP 路由、持久化。
